@@ -8,10 +8,10 @@
 import { select, confirm, input } from '@inquirer/prompts';
 import { readFileSync, appendFileSync, existsSync, readdirSync } from 'fs';
 import { join, dirname, basename, extname, resolve } from 'path';
-import { execSync, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { configDotenv } from 'dotenv';
 import { statSync } from 'fs';
-import { runTranscribeForVideo } from '../lib/run-transcribe';
+import { runTranscribeForVideo } from './lib/run-transcribe';
 
 const MODEL   = 'google/gemini-3.1-pro-preview';
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
@@ -58,10 +58,10 @@ When the user provides additional context (links, corrections, tone preference),
 Personality: professional, direct, and developer-savvy. Keeps things crisp and useful for busy engineers.`;
 
 // ---------------------------------------------------------------------------
-// Load .env from repo root (two levels up: video-description -> tools -> repo)
+// Load .env from this clone, regardless of the caller's working directory.
 // ---------------------------------------------------------------------------
 
-configDotenv({ path: join(dirname(dirname(import.meta.dirname)), '.env') });
+configDotenv({ path: join(import.meta.dirname, '.env') });
 
 const apiKey = process.env.OPENROUTER_API_KEY;
 if (!apiKey) {
@@ -267,8 +267,8 @@ async function sendMessage(userInput: string): Promise<void> {
       headers: {
         Authorization:  `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://github.com/mikecann/mikerosoft',
-        'X-Title':      'mikerosoft/video-description',
+        'HTTP-Referer': 'https://github.com/mikecann/video-description',
+        'X-Title':      'video-description',
       },
       body: JSON.stringify({ model: MODEL, messages, temperature: 0.7, max_tokens: 8000 }),
     });

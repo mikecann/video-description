@@ -2,6 +2,11 @@
   "name": "video-description",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
     "@inquirer/prompts": "latest",
     "dotenv": "latest"
